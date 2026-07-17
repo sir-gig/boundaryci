@@ -2,6 +2,16 @@
 
 All notable changes to BoundaryCI are documented here.
 
+## 0.1.7 - 2026-07-17
+
+### Added
+
+- Direct GitHub Marketplace badge and listing link.
+
+### Changed
+
+- Validate the corrected npm trusted-publisher relationship through an automated provenance release.
+
 ## 0.1.6 - 2026-07-17
 
 ### Added
