@@ -2,6 +2,13 @@
 
 All notable changes to BoundaryCI are documented here.
 
+## 0.1.5 - 2026-07-17
+
+### Added
+
+- Tokenless npm trusted-publishing workflow with automatic provenance.
+- npm version badge and Marketplace-ready release metadata.
+
 ## 0.1.4 - 2026-07-17
 
 ### Fixed

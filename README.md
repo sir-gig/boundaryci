@@ -1,6 +1,7 @@
 # BoundaryCI
 
 [![CI](https://github.com/sir-gig/boundaryci/actions/workflows/ci.yml/badge.svg)](https://github.com/sir-gig/boundaryci/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/boundaryci.svg)](https://www.npmjs.com/package/boundaryci)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Catch cross-tenant authorization mistakes before a SaaS migration reaches production.
@@ -163,7 +164,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: sir-gig/boundaryci@v0.1.4
+      - uses: sir-gig/boundaryci@v0.1.5
         with:
           target: .
           fail-on: high
