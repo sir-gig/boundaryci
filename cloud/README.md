@@ -71,6 +71,18 @@ Copy-Item cloud/supabase/billing-secrets.example cloud/supabase/.env.billing.loc
 npx.cmd supabase secrets set --project-ref YOUR_PROJECT_REF --env-file cloud/supabase/.env.billing.local
 ```
 
+Validate the test prices and create or update the dedicated BoundaryCI customer
+portal configuration. The command prints the non-secret
+`STRIPE_PORTAL_CONFIGURATION_ID`; add it to Supabase secrets before deploying
+`create-portal`:
+
+```powershell
+cd cloud/supabase
+npx.cmd --yes deno run --allow-env --allow-net --env-file=.env.billing.local scripts/configure-stripe.ts
+npx.cmd supabase secrets set --project-ref YOUR_PROJECT_REF STRIPE_PORTAL_CONFIGURATION_ID=bpc_YOUR_ID
+cd ../..
+```
+
 Deploy the authenticated billing functions and the signature-authenticated webhook:
 
 ```powershell

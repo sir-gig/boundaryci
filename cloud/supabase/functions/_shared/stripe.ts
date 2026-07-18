@@ -54,6 +54,16 @@ export function webhookSecret(): string {
   return secret;
 }
 
+export function portalConfigurationId(): string | undefined {
+  const configurationId = Deno.env.get("STRIPE_PORTAL_CONFIGURATION_ID")
+    ?.trim();
+  if (!configurationId) return undefined;
+  if (!configurationId.startsWith("bpc_")) {
+    throw new Error("The Stripe billing portal configuration is invalid.");
+  }
+  return configurationId;
+}
+
 export function configuredPrice(
   plan: PaidPlan,
   interval: BillingInterval,

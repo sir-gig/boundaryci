@@ -1,6 +1,6 @@
 import { appUrl, json, options } from "../_shared/http.ts";
 import { authenticatedUser, managedOrganization } from "../_shared/supabase.ts";
-import { stripeClient } from "../_shared/stripe.ts";
+import { portalConfigurationId, stripeClient } from "../_shared/stripe.ts";
 
 Deno.serve(async (request) => {
   const preflight = options(request);
@@ -39,9 +39,11 @@ Deno.serve(async (request) => {
   }
 
   try {
+    const configuration = portalConfigurationId();
     const session = await stripeClient().billingPortal.sessions.create({
       customer: organization.stripe_customer_id,
       return_url: `${appUrl()}/?billing=portal`,
+      ...(configuration ? { configuration } : {}),
     });
     return json(request, 200, { url: session.url });
   } catch (caught) {
