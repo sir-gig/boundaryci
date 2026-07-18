@@ -70,7 +70,7 @@ GitHub:      https://github.com/sir-gig/boundaryci
 npm:         https://www.npmjs.com/package/boundaryci
 Marketplace: https://github.com/marketplace/actions/boundaryci-tenant-isolation-scan
 
-Version 0.1.7 is publicly released. It has automated tests, release automation,
+Version 0.2.0 adds the first BoundaryCI Cloud product foundation. The project has automated tests, release automation,
 npm supply-chain provenance, documentation, legal terms, privacy information,
 and a support process.
 

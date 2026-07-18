@@ -9,6 +9,8 @@ The scanner remains local. Cloud receives a minimized result only when a custome
 - `supabase/migrations/20260718000000_cloud_control_plane.sql` creates organizations, memberships, repositories, hashed ingestion keys, scan runs, findings, indexes, row-level security, onboarding RPCs, and the atomic ingestion RPC.
 - `supabase/functions/ingest-scan/index.ts` is the public HTTP boundary. It hashes the bearer token, delegates all authorization and writes to one database transaction, and returns only a scan identifier.
 - `../src/cloud.ts` is the CLI payload minimizer and HTTPS upload client.
+- `web` is the React dashboard for authentication, organization/repository onboarding,
+  one-time token creation, plan usage, scan history, and finding detail.
 
 ## Security model
 
@@ -46,14 +48,40 @@ The future dashboard should perform these calls with the signed-in user's Supaba
 
 Billing webhooks must use a server-side service credential to update `plan`, `subscription_status`, `monthly_scan_limit`, and the Stripe identifiers. Those columns are deliberately not writable by authenticated browser clients. A limit of `0` means unlimited scans and should be reserved for contracted Enterprise accounts.
 
-## Next application slice
+## Run the dashboard locally
 
-Build the authenticated dashboard on these read models:
+Use the project's public publishable key, never its secret or service-role key:
+
+```bash
+cd cloud/web
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+The production build is static and is deployed by `.github/workflows/deploy-cloud-web.yml`.
+Configure these public GitHub repository variables before running that workflow:
+
+- `BOUNDARYCI_SUPABASE_URL`
+- `BOUNDARYCI_SUPABASE_PUBLISHABLE_KEY`
+- `BOUNDARYCI_INGEST_URL`
+
+For the current GitHub Pages private-beta host, add
+`https://sir-gig.github.io/boundaryci/` to the Supabase Auth redirect allow list.
+The publishable key is intentionally browser-visible. The Supabase secret and legacy
+service-role keys must never be placed in Vite variables or GitHub Pages configuration.
+
+## Dashboard scope and next application slice
+
+The authenticated dashboard now uses these read models:
 
 - organization overview: newest runs, pass rate, and new findings by severity;
 - repository page: run history by commit and branch;
 - scan page: finding evidence, recommendation, and disposition;
 - onboarding: organization, repository, and one-time ingestion-token creation;
-- billing: checkout, webhook-driven subscription updates, and usage display.
+- plan usage is visible.
+
+The next application slice is billing: Stripe checkout, webhook-driven subscription
+updates, a customer billing portal, and enforced trial conversion.
 
 After five design-partner repositories are sending real runs, prioritize the workflow customers repeatedly request rather than expanding into a generic security dashboard.

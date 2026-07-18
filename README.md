@@ -165,7 +165,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: sir-gig/boundaryci@v0.1.7
+      - uses: sir-gig/boundaryci@v0.2.0
         with:
           target: .
           fail-on: high
@@ -186,7 +186,7 @@ npx.cmd boundaryci scan . --upload --repository owner/repository
 In GitHub Actions, repository, commit, branch, and pull-request metadata are detected automatically:
 
 ```yaml
-- uses: sir-gig/boundaryci@v0.1.7
+- uses: sir-gig/boundaryci@v0.2.0
   with:
     target: .
     fail-on: high

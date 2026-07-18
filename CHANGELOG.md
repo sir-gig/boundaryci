@@ -2,7 +2,7 @@
 
 All notable changes to BoundaryCI are documented here.
 
-## Unreleased
+## 0.2.0 - 2026-07-17
 
 ### Added
 
@@ -12,6 +12,9 @@ All notable changes to BoundaryCI are documented here.
 - Supabase control-plane schema with organization isolation, repository-bound hashed
   tokens, idempotent scan ingestion, subscription enforcement, and monthly quotas.
 - Deployable scan-ingestion Edge Function and private-beta operator documentation.
+- Authenticated Cloud dashboard with organization/repository onboarding, one-time token
+  setup, plan usage, repository health, scan history, and finding evidence pages.
+- Independent Cloud web CI and a GitHub Pages deployment workflow.
 
 ## 0.1.7 - 2026-07-17
 
