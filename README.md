@@ -173,6 +173,32 @@ jobs:
 
 The action uses GitHub workflow commands to annotate the exact migration lines. Existing baseline findings and active waivers do not create annotations.
 
+## BoundaryCI Cloud private beta
+
+The paid-product foundation is an opt-in scan-history service. Scanning still happens inside the customer's local environment or GitHub runner. With `--upload`, BoundaryCI sends a minimized result to a repository-bound Cloud endpoint after the local report has been produced:
+
+```powershell
+$env:BOUNDARYCI_CLOUD_URL = "https://your-project.supabase.co/functions/v1/ingest-scan"
+$env:BOUNDARYCI_CLOUD_TOKEN = "bci_repository_token"
+npx.cmd boundaryci scan . --upload --repository owner/repository
+```
+
+In GitHub Actions, repository, commit, branch, and pull-request metadata are detected automatically:
+
+```yaml
+- uses: sir-gig/boundaryci@v0.1.7
+  with:
+    target: .
+    fail-on: high
+    upload: "true"
+    cloud-url: ${{ secrets.BOUNDARYCI_CLOUD_URL }}
+    cloud-token: ${{ secrets.BOUNDARYCI_CLOUD_TOKEN }}
+```
+
+Cloud upload is disabled by default. The payload contains repository identity, commit context, summary counts, finding metadata, and short evidence/remediation snippets. BoundaryCI removes the absolute scan target and migration-file list, excludes local warnings, normalizes finding paths, and applies its common-secret redaction before upload. It does not upload complete migration files. Redaction is defense-in-depth, so teams must still decide whether findings may leave their environment.
+
+The deployable Supabase schema and ingestion Edge Function live in [`cloud/supabase`](cloud/supabase). The control plane binds every ingestion token to one repository, stores only SHA-256 token hashes, makes retries idempotent, enforces subscription status and monthly scan limits, and applies row-level security to every tenant-owned table. See [`cloud/README.md`](cloud/README.md) for its security model and deployment path.
+
 ## Product architecture
 
 ```text
@@ -186,7 +212,7 @@ SQL migrations
                                            └── pretty / JSON / SARIF / GitHub ── CI
 ```
 
-The CLI remains local-first: it does not need database credentials, and deterministic scans make no network requests. The hosted product can later add organization-wide policy management, historical reporting, and active tenant-boundary tests without moving customer database credentials into a dashboard.
+The CLI remains local-first: it does not need database credentials, and deterministic scans make no network requests. Fireworks review and Cloud upload are separate, explicit network features. The Cloud control plane can add organization-wide policy management, historical reporting, and active tenant-boundary tests without moving customer database credentials into a dashboard.
 
 ## Development
 

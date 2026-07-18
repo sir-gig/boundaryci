@@ -20,6 +20,15 @@ inputs:
   require-fireworks:
     description: Set to true to fail when the Fireworks review is unavailable.
     default: "false"
+  upload:
+    description: Set to true to upload a minimized result to BoundaryCI Cloud.
+    default: "false"
+  cloud-url:
+    description: BoundaryCI Cloud ingestion endpoint.
+    default: ""
+  cloud-token:
+    description: Repository-bound BoundaryCI Cloud ingestion token.
+    required: false
 runs:
   using: composite
   steps:
@@ -35,8 +44,12 @@ runs:
         BOUNDARYCI_FAIL_ON: ${{ inputs.fail-on }}
         BOUNDARYCI_FIREWORKS: ${{ inputs.fireworks }}
         BOUNDARYCI_REQUIRE_FIREWORKS: ${{ inputs.require-fireworks }}
+        BOUNDARYCI_UPLOAD: ${{ inputs.upload }}
+        BOUNDARYCI_CLOUD_URL: ${{ inputs.cloud-url }}
+        BOUNDARYCI_CLOUD_TOKEN: ${{ inputs.cloud-token }}
       run: |
         args=()
         if [[ "$BOUNDARYCI_FIREWORKS" == "true" ]]; then args+=(--fireworks); fi
         if [[ "$BOUNDARYCI_REQUIRE_FIREWORKS" == "true" ]]; then args+=(--require-fireworks); fi
+        if [[ "$BOUNDARYCI_UPLOAD" == "true" ]]; then args+=(--upload); fi
         node "${{ github.action_path }}/dist/cli.js" scan "$GITHUB_WORKSPACE/$BOUNDARYCI_TARGET" --profile "$BOUNDARYCI_PROFILE" --format github --fail-on "$BOUNDARYCI_FAIL_ON" "${args[@]}"

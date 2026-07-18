@@ -19,11 +19,15 @@ This is infrastructure, not another dashboard users must remember to visit. It l
 - Committable baselines and owned, expiring waivers.
 - GitHub line annotations, composite action, JSON, and SARIF.
 - Secure/vulnerable regression fixtures.
+- Opt-in, secret-redacted Cloud result upload from the CLI and GitHub Action.
+- Multi-tenant Supabase control-plane schema with repository-bound ingestion keys,
+  idempotent scan history, subscription enforcement, quotas, and row-level security.
+- Deployable scan-ingestion Edge Function.
 
 ## What to build next
 
 1. **Design-partner installs:** put the action into five real multi-tenant Supabase repositories and measure setup time, false-positive rate, and whether teams make it a required check.
-2. **Hosted GitHub App:** centralize annotations, baseline changes, waiver approvals, and history across repositories.
+2. **Hosted GitHub App and dashboard:** use the Cloud ingestion foundation to centralize annotations, baseline changes, waiver approvals, and history across repositories.
 3. **Ephemeral attack runner:** customer-provided setup/teardown hooks create tenant A and tenant B in a disposable Supabase branch. BoundaryCI attempts cross-tenant `SELECT`, `INSERT`, `UPDATE`, RPC, storage, and GraphQL operations using real user JWTs.
 4. **Authorization manifest:** teams declare protected resources and invariants once; the runner generates a repeatable tenant-boundary test matrix.
 5. **Evidence export:** signed run history and controls mapped to common security-review questions.
@@ -37,7 +41,7 @@ Do not start with a general-purpose security scanner. Own tenant isolation for S
 - Growth: active two-tenant tests, scheduled production-safe checks, evidence export, and SSO.
 - Enterprise: self-hosted runner, custom policy packs, retention controls, and support.
 
-Before building the hosted dashboard, recruit five design partners and install the CLI in their real repositories. The buying signal is not praise; it is a team allowing BoundaryCI to become a required merge check and asking for centralized history, waivers, or audit evidence.
+Before expanding the hosted dashboard, recruit five design partners and install the CLI in their real repositories. The buying signal is not praise; it is a team allowing BoundaryCI to become a required merge check and asking for centralized history, waivers, or audit evidence. The Cloud ingestion slice should be deployed first so those installs produce real product data with explicit customer consent.
 
 ## Defensibility
 

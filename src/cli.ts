@@ -9,6 +9,7 @@ import {
   resolveAdoptionPath,
   writeBaseline,
 } from "./adoption.js";
+import { createCloudScanPayload, uploadScanReport } from "./cloud.js";
 import { loadConfig, writeDefaultConfig } from "./config.js";
 import { discoverSqlFiles } from "./discover.js";
 import { prepareFindings, sortFindings } from "./findings.js";
@@ -37,6 +38,12 @@ interface ScanCommandOptions {
   requireFireworks: boolean;
   fireworksModel?: string;
   includeAiInExitCode: boolean;
+  upload: boolean;
+  cloudUrl?: string;
+  repository?: string;
+  commit?: string;
+  branch?: string;
+  pullRequest?: string;
 }
 
 interface BaselineCommandOptions {
@@ -95,6 +102,12 @@ program
     "Allow Fireworks findings to fail CI (disabled by default)",
     false,
   )
+  .option("--upload", "Upload a minimized, secret-redacted report to BoundaryCI Cloud", false)
+  .option("--cloud-url <url>", "BoundaryCI Cloud ingestion endpoint")
+  .option("--repository <owner/name>", "Repository identity for Cloud history")
+  .option("--commit <sha>", "Commit SHA for Cloud history")
+  .option("--branch <name>", "Branch name for Cloud history")
+  .option("--pull-request <number>", "Pull request number for Cloud history")
   .action(async (target: string, options: ScanCommandOptions) => {
     try {
       const { config, configPath } = await loadConfig(target, options.config);
@@ -162,6 +175,42 @@ program
         process.stdout.write(`BoundaryCI report written to ${path.resolve(options.output)}\n`);
       } else {
         process.stdout.write(rendered);
+      }
+
+      if (options.upload) {
+        const endpoint = options.cloudUrl ?? process.env.BOUNDARYCI_CLOUD_URL;
+        const token = process.env.BOUNDARYCI_CLOUD_TOKEN;
+        const repository = options.repository ?? process.env.GITHUB_REPOSITORY;
+        if (!endpoint) {
+          throw new Error("--upload requires --cloud-url or BOUNDARYCI_CLOUD_URL.");
+        }
+        if (!token) {
+          throw new Error("--upload requires the BOUNDARYCI_CLOUD_TOKEN environment variable.");
+        }
+        if (!repository) {
+          throw new Error("--upload requires --repository or GITHUB_REPOSITORY.");
+        }
+
+        const pullRequestText =
+          options.pullRequest ??
+          process.env.GITHUB_REF?.match(/^refs\/pull\/(\d+)\//)?.[1];
+        const pullRequest = pullRequestText === undefined ? null : Number(pullRequestText);
+        const payload = createCloudScanPayload(report, {
+          repository,
+          commitSha: options.commit ?? process.env.GITHUB_SHA ?? null,
+          branch:
+            options.branch ??
+            process.env.GITHUB_HEAD_REF ??
+            process.env.GITHUB_REF_NAME ??
+            null,
+          pullRequest,
+          failOn: config.failOn,
+          includeAiInExitCode: config.fireworks.includeInExitCode,
+        });
+        const uploaded = await uploadScanReport(endpoint, token, payload);
+        process.stderr.write(
+          `BoundaryCI Cloud accepted scan ${uploaded.scanId}${uploaded.dashboardUrl ? ` - ${uploaded.dashboardUrl}` : ""}\n`,
+        );
       }
 
       if (shouldFail(report, config.failOn, config.fireworks.includeInExitCode)) {

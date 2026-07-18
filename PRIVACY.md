@@ -2,11 +2,11 @@
 
 Effective date: July 17, 2026
 
-This notice explains how the BoundaryCI developer handles information when you use the BoundaryCI CLI or GitHub Action.
+This notice explains how the BoundaryCI developer handles information when you use the BoundaryCI CLI, GitHub Action, or optional BoundaryCI Cloud private beta.
 
 ## Local deterministic scans
 
-BoundaryCI does not require an account with the Developer. Deterministic scans run in your local environment or GitHub Actions runner and make no network requests. BoundaryCI has no telemetry, advertising, analytics, or Developer-operated collection endpoint. The Developer does not receive your repository, migrations, findings, credentials, or workflow metadata merely because you run BoundaryCI.
+BoundaryCI does not require an account with the Developer. Deterministic scans run in your local environment or GitHub Actions runner and make no network requests. BoundaryCI has no telemetry, advertising, or analytics. The Developer does not receive your repository, migrations, findings, credentials, or workflow metadata merely because you run BoundaryCI. Information is sent to BoundaryCI Cloud only when you explicitly enable `--upload` or the equivalent GitHub Action input.
 
 ## Optional Fireworks review
 
@@ -14,9 +14,17 @@ The Fireworks review is disabled by default. If you enable it, BoundaryCI redact
 
 Fireworks acts under its own terms and privacy practices. You are responsible for deciding whether migration text may be sent to Fireworks and for configuring your Fireworks account appropriately. Do not enable the feature for material you are not authorized to submit.
 
+## Optional BoundaryCI Cloud
+
+BoundaryCI Cloud upload is disabled by default. When enabled, the CLI sends repository identity, commit and pull-request context, scan timestamps, database-profile and AI-review status, summary counts, and finding details. Finding details include relative file paths, line numbers, classifications, short evidence snippets, remediation text, disposition, and any waiver metadata.
+
+Before upload, the CLI removes the absolute scan target and migration-file inventory, excludes local warning messages, normalizes finding paths, limits field sizes, and applies common token, JWT, password, secret, and API-key redaction. Complete migration files and database credentials are not part of the Cloud payload. Redaction cannot guarantee that every confidential value is removed. Do not enable Cloud upload unless you are authorized to send the resulting finding data.
+
+Repository-bound ingestion tokens are used to authenticate uploads. BoundaryCI Cloud stores a SHA-256 hash rather than the plaintext token. Supabase hosts the private-beta control plane and processes the uploaded records on the Developer's behalf. Future production providers and retention periods will be identified before general availability.
+
 ## GitHub and npm
 
-GitHub and npm may process information when they host the repository, run workflows, distribute releases, or serve the npm package. They do so under their own privacy notices. BoundaryCI does not provide that information to a separate Developer-operated service.
+GitHub and npm may process information when they host the repository, run workflows, distribute releases, or serve the npm package. They do so under their own privacy notices. BoundaryCI does not provide scan information to a Developer-operated service unless Cloud upload is explicitly enabled.
 
 ## Information you choose to submit
 
@@ -26,11 +34,11 @@ Never submit API keys, credentials, personal data, customer migrations, or other
 
 ## Selling and sharing
 
-The Developer does not sell personal information. The Developer does not share submitted information except as needed to respond through GitHub, comply with law, protect rights or security, or use service providers operating under their own terms.
+The Developer does not sell personal information. The Developer does not share submitted information except as needed to provide BoundaryCI Cloud through service providers, respond through GitHub, comply with law, or protect rights or security.
 
 ## Retention and requests
 
-BoundaryCI itself stores no information with the Developer. For information you voluntarily submit through GitHub, use GitHub's controls or contact the Developer through a repository issue to request correction or deletion. Legal and security records may be retained when reasonably necessary.
+Local-only BoundaryCI use stores no information with the Developer. Cloud scan history is retained according to the applicable private-beta or subscription plan and may be deleted earlier when an organization or repository is removed. For GitHub submissions, use GitHub's controls. For Cloud or support information, contact the Developer to request access, correction, export, or deletion. Legal, billing, fraud-prevention, and security records may be retained when reasonably necessary.
 
 ## Changes and contact
 
