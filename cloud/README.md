@@ -39,7 +39,7 @@ Create and link a Supabase project, then apply the migration and deploy the func
 supabase link --project-ref YOUR_PROJECT_REF
 supabase db push
 supabase functions deploy ingest-scan --no-verify-jwt
-supabase secrets set BOUNDARYCI_APP_URL=https://app.boundaryci.com
+supabase secrets set BOUNDARYCI_APP_URL=https://boundaryci.com
 ```
 
 JWT verification is disabled only at the Edge gateway because uploads use a repository-bound BoundaryCI token instead of a Supabase user JWT. The function authenticates that token through the database RPC. `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are supplied to hosted Supabase Edge Functions; never expose the service-role key to the CLI, browser, or GitHub workflow.
@@ -135,8 +135,8 @@ Configure these public GitHub repository variables before running that workflow:
 - `BOUNDARYCI_SUPABASE_PUBLISHABLE_KEY`
 - `BOUNDARYCI_INGEST_URL`
 
-For the current GitHub Pages public-beta host, add
-`https://sir-gig.github.io/boundaryci/` to the Supabase Auth redirect allow list.
+For the production GitHub Pages host, set the Supabase Auth Site URL to
+`https://boundaryci.com/` and add that exact URL to the redirect allow list.
 The publishable key is intentionally browser-visible. The Supabase secret and legacy
 service-role keys must never be placed in Vite variables or GitHub Pages configuration.
 

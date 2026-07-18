@@ -20,7 +20,7 @@ mail separate from future marketing mail; for example, send auth mail from
 4. Enter the provider's SMTP host, port, username, and password. Set the sender name to
    `BoundaryCI` and use the verified From address.
 5. In **Authentication → URL Configuration**, set the Site URL to
-   `https://sir-gig.github.io/boundaryci/` and add that exact URL to the redirect allow list.
+   `https://boundaryci.com/` and add that exact URL to the redirect allow list.
 6. Keep email confirmation enabled. Start with Supabase's default custom-SMTP rate limit and
    raise it only after bot protection is configured.
 

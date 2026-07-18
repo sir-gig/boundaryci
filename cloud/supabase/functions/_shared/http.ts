@@ -1,4 +1,4 @@
-const DEFAULT_APP_URL = "https://sir-gig.github.io/boundaryci";
+const DEFAULT_APP_URL = "https://boundaryci.com";
 
 export function appUrl(): string {
   return (Deno.env.get("BOUNDARYCI_APP_URL")?.trim() || DEFAULT_APP_URL)

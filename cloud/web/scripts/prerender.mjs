@@ -5,7 +5,7 @@ import { createServer } from "vite";
 const projectDirectory = resolve(import.meta.dirname, "..");
 const outputPath = resolve(projectDirectory, "dist", "index.html");
 const placeholder = '<div id="root"></div>';
-const baseUrl = process.env.GITHUB_ACTIONS ? "/boundaryci/" : "/";
+const baseUrl = "/";
 
 const vite = await createServer({
   configFile: resolve(projectDirectory, "vite.config.ts"),

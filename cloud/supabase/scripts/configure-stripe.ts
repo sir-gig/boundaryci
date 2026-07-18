@@ -1,7 +1,7 @@
 import Stripe from "npm:stripe@22.3.2";
 
 const APP_NAME = "BoundaryCI";
-const DEFAULT_APP_URL = "https://sir-gig.github.io/boundaryci";
+const DEFAULT_APP_URL = "https://boundaryci.com";
 const MANAGED_CONFIGURATION = "boundaryci";
 type BillingMode = "test" | "live";
 

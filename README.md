@@ -5,6 +5,8 @@
 [![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-BoundaryCI-blue?logo=github)](https://github.com/marketplace/actions/boundaryci-tenant-isolation-scan)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+[BoundaryCI website and Cloud dashboard](https://boundaryci.com/)
+
 Catch cross-tenant authorization mistakes before a SaaS migration reaches production.
 
 BoundaryCI is a local-first CLI for Supabase and PostgreSQL projects. It reconstructs the final security state from SQL migrations, applies deterministic tenant-isolation rules, and can optionally ask a Fireworks model to review policy interactions that static rules cannot reliably understand.

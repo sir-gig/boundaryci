@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { PublicSite } from "./PublicSite";
 
 describe("BoundaryCI public launch site", () => {
-  const markup = renderToStaticMarkup(<PublicSite baseUrl="/boundaryci/" />);
+  const markup = renderToStaticMarkup(<PublicSite baseUrl="/" />);
 
   it("renders the core tenant-isolation promise and real scanner command", () => {
     expect(markup).toContain("Stop one customer from seeing");
@@ -19,7 +19,7 @@ describe("BoundaryCI public launch site", () => {
   });
 
   it("routes public conversion actions into the Cloud signup", () => {
-    expect(markup).toContain('href="/boundaryci/?auth=signup"');
-    expect(markup).toContain('href="/boundaryci/?auth=signin"');
+    expect(markup).toContain('href="/?auth=signup"');
+    expect(markup).toContain('href="/?auth=signin"');
   });
 });

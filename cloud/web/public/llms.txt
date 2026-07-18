@@ -8,7 +8,7 @@ The scanner runs locally or inside GitHub Actions without database credentials. 
 
 ## Start here
 
-- Public product page: https://sir-gig.github.io/boundaryci/
+- Public product page: https://boundaryci.com/
 - Documentation and source: https://github.com/sir-gig/boundaryci
 - npm package: https://www.npmjs.com/package/boundaryci
 - GitHub Marketplace Action: https://github.com/marketplace/actions/boundaryci-tenant-isolation-scan
