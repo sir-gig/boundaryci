@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import {
   absoluteUrl,
@@ -31,13 +32,14 @@ describe("public discovery pages", () => {
   it("pre-renders a useful page with one primary heading for every route", () => {
     for (const route of PUBLIC_ROUTES) {
       const markup = renderPublicRoute(route.path, "/");
-      const visibleText = markup
-        .replace(/<[^>]+>/g, "")
-        .replaceAll("&#x27;", "'")
-        .replaceAll("&amp;", "&");
       expect(markup).toContain("BoundaryCI");
       expect(markup.match(/<h1/g)).toHaveLength(1);
-      expect(visibleText).toContain(route.heading);
+      if (route.kind === "home") {
+        expect(markup).toContain("Stop one customer from seeing");
+        expect(markup).toContain("another customer&#x27;s data.");
+      } else {
+        expect(markup).toContain(renderToStaticMarkup(<h1>{route.heading}</h1>));
+      }
     }
   });
 
