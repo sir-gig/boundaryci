@@ -173,7 +173,7 @@ jobs:
 
 The action uses GitHub workflow commands to annotate the exact migration lines. Existing baseline findings and active waivers do not create annotations.
 
-## BoundaryCI Cloud private beta
+## BoundaryCI Cloud public beta
 
 The paid-product foundation is an opt-in scan-history service. Scanning still happens inside the customer's local environment or GitHub runner. With `--upload`, BoundaryCI sends a minimized result to a repository-bound Cloud endpoint after the local report has been produced:
 

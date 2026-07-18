@@ -31,7 +31,7 @@ The scanner remains local. Cloud receives a minimized result only when a custome
 - Stripe webhook event IDs are recorded in the same database transaction as the subscription update, so retries are safe.
 - Checkout and portal functions re-check the caller's Supabase identity and owner/admin membership server-side.
 
-## Deploy a private-beta environment
+## Deploy a beta environment
 
 Create and link a Supabase project, then apply the migration and deploy the function:
 
@@ -126,7 +126,7 @@ Configure these public GitHub repository variables before running that workflow:
 - `BOUNDARYCI_SUPABASE_PUBLISHABLE_KEY`
 - `BOUNDARYCI_INGEST_URL`
 
-For the current GitHub Pages private-beta host, add
+For the current GitHub Pages public-beta host, add
 `https://sir-gig.github.io/boundaryci/` to the Supabase Auth redirect allow list.
 The publishable key is intentionally browser-visible. The Supabase secret and legacy
 service-role keys must never be placed in Vite variables or GitHub Pages configuration.

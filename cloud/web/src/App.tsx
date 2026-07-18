@@ -3,11 +3,17 @@ import { useEffect, useState } from "react";
 import { AuthScreen } from "./components/AuthScreen";
 import { Brand } from "./components/Brand";
 import { Dashboard } from "./components/Dashboard";
+import { PublicSite } from "./components/PublicSite";
 import { cloudConfigurationError, supabase } from "./lib/supabase";
 
 export function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(Boolean(supabase));
+  const publicUrl = import.meta.env.BASE_URL;
+  const requestedAuthMode = new URLSearchParams(window.location.search).get("auth");
+  const authMode = requestedAuthMode === "signup" || requestedAuthMode === "signin"
+    ? requestedAuthMode
+    : null;
 
   useEffect(() => {
     if (!supabase) return;
@@ -28,6 +34,12 @@ export function App() {
     };
   }, []);
 
+  if (loading) {
+    return <PublicSite baseUrl={publicUrl} />;
+  }
+
+  if (!session && !authMode) return <PublicSite baseUrl={publicUrl} />;
+
   if (cloudConfigurationError) {
     return (
       <main className="configuration-screen">
@@ -42,9 +54,7 @@ export function App() {
     );
   }
 
-  if (loading) {
-    return <div className="full-loading"><Brand /><span>Securing your session…</span></div>;
-  }
-
-  return session ? <Dashboard session={session} /> : <AuthScreen />;
+  if (session) return <Dashboard session={session} />;
+  if (authMode) return <AuthScreen initialMode={authMode} publicUrl={publicUrl} />;
+  return <PublicSite baseUrl={publicUrl} />;
 }

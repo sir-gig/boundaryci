@@ -258,7 +258,7 @@ export function Dashboard({ session }: { session: Session }) {
           >
             <span>▤</span> Scan history
           </button>
-          <button type="button" disabled title="Team management is the next private-beta slice">
+          <button type="button" disabled title="Team management is the next Cloud product slice">
             <span>♙</span> Team <em>Soon</em>
           </button>
           <button
