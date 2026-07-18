@@ -7,3 +7,6 @@ coverage/
 *.log
 *.sarif
 .boundaryci/*.tmp
+cloud/supabase/.temp/
+supabase/.temp/
+*.tsbuildinfo

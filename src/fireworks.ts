@@ -57,7 +57,7 @@ const responseSchema = {
   },
 } as const;
 
-function redactSecrets(sql: string): string {
+export function redactSecrets(sql: string): string {
   return sql
     .replace(/\b(?:sk|pk|fw|sbp)_[A-Za-z0-9_-]{16,}\b/g, "[REDACTED_TOKEN]")
     .replace(/\beyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g, "[REDACTED_JWT]")
