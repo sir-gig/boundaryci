@@ -99,6 +99,17 @@ describe("public discovery pages", () => {
     expect(renderPublicRoute("/privacy/", "/")).toContain("Optional Cloud upload");
     expect(renderPublicRoute("/support/", "/")).toContain("Billing and subscription help");
   });
+
+  it("explains Cloud secrets and reusable workflow setup publicly", () => {
+    const quickstart = renderPublicRoute("/docs/quickstart/", "/");
+    expect(quickstart).toContain("Connect a repository to BoundaryCI Cloud");
+    expect(quickstart).toContain("BOUNDARYCI_CLOUD_TOKEN");
+    expect(quickstart).toContain("Every repository dashboard keeps the exact file path");
+
+    const action = renderPublicRoute("/github-action/", "/");
+    expect(action).toContain("Store the token as a GitHub secret");
+    expect(action).toContain("Reference the secret from the workflow");
+  });
 });
 
 describe("private application indexing", () => {

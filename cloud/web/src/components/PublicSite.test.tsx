@@ -26,4 +26,11 @@ describe("BoundaryCI public launch site", () => {
     expect(markup).toContain('href="/?auth=signup"');
     expect(markup).toContain('href="/?auth=signin"');
   });
+
+  it("explains the GitHub token and workflow without exposing a credential", () => {
+    expect(markup).toContain("How do I connect a GitHub repository?");
+    expect(markup).toContain("BOUNDARYCI_CLOUD_TOKEN");
+    expect(markup).toContain("The token never goes in the file");
+    expect(markup).not.toContain("bci_");
+  });
 });

@@ -8,6 +8,7 @@ import type { IngestionKeyResult, Organization, Repository, ScanRun } from "../t
 import { Brand } from "./Brand";
 import { Billing } from "./Billing";
 import { OrganizationOnboarding, RepositoryOnboarding } from "./Onboarding";
+import { RepositorySetupGuide } from "./RepositorySetupGuide";
 import { ScanDetail } from "./ScanDetail";
 import { TokenReveal } from "./TokenReveal";
 
@@ -40,6 +41,7 @@ export function Dashboard({ session }: { session: Session }) {
   const [selectedScan, setSelectedScan] = useState<SelectedScan | null>(null);
   const [revealedToken, setRevealedToken] = useState<RevealedToken | null>(null);
   const [repositoryFilter, setRepositoryFilter] = useState<string>("all");
+  const [setupRepositoryId, setSetupRepositoryId] = useState<string | null>(null);
   const [creatingTokenFor, setCreatingTokenFor] = useState<string | null>(null);
   const [organizationRole, setOrganizationRole] = useState<string | null>(null);
   const billingResult = new URLSearchParams(window.location.search).get("billing");
@@ -151,6 +153,7 @@ export function Dashboard({ session }: { session: Session }) {
     }
     setSelectedScan(null);
     setRepositoryFilter("all");
+    setSetupRepositoryId(null);
   }, [loadWorkspace, selectedOrganizationId]);
 
   useEffect(() => {
@@ -181,6 +184,7 @@ export function Dashboard({ session }: { session: Session }) {
   );
   const visibleRuns =
     repositoryFilter === "all" ? runs : runs.filter((run) => run.repository_id === repositoryFilter);
+  const setupRepository = repositories.find((repository) => repository.id === setupRepositoryId);
   const passedRuns = runs.filter((run) => run.outcome === "passed").length;
   const passRate = runs.length === 0 ? null : Math.round((passedRuns / runs.length) * 100);
 
@@ -352,18 +356,34 @@ export function Dashboard({ session }: { session: Session }) {
                           <span className={`repo-status ${latest?.outcome ?? "waiting"}`}>
                             {latest?.outcome ?? "waiting"}
                           </span>
-                          <button
-                            className="text-button"
-                            type="button"
-                            disabled={creatingTokenFor === repository.id}
-                            onClick={() => void createReplacementToken(repository)}
-                          >
-                            {creatingTokenFor === repository.id ? "Creating…" : "New token"}
-                          </button>
+                          <div className="repo-card-actions">
+                            <button
+                              className="text-button"
+                              type="button"
+                              aria-expanded={setupRepositoryId === repository.id}
+                              onClick={() => setSetupRepositoryId((current) => current === repository.id ? null : repository.id)}
+                            >
+                              {setupRepositoryId === repository.id ? "Hide setup" : "Setup guide"}
+                            </button>
+                            <button
+                              className="text-button"
+                              type="button"
+                              disabled={creatingTokenFor === repository.id}
+                              onClick={() => void createReplacementToken(repository)}
+                            >
+                              {creatingTokenFor === repository.id ? "Creating…" : "New token"}
+                            </button>
+                          </div>
                         </article>
                       );
                     })}
                   </div>
+                  {setupRepository && (
+                    <RepositorySetupGuide
+                      repository={setupRepository}
+                      onClose={() => setSetupRepositoryId(null)}
+                    />
+                  )}
                 </section>
 
                 <section className="runs-section">

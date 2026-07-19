@@ -243,6 +243,10 @@ export function PublicSite({ baseUrl }: { baseUrl: string }) {
         </div>
         <div className="launch-faq-list">
           <details>
+            <summary>How do I connect a GitHub repository?<span>+</span></summary>
+            <p>Create the repository in BoundaryCI Cloud, store its one-time token as the GitHub Actions secret BOUNDARYCI_CLOUD_TOKEN, and commit the generated workflow YAML. The token never goes in the file, and the repository dashboard keeps the safe YAML available under Setup guide.</p>
+          </details>
+          <details>
             <summary>Does BoundaryCI connect to my production database?<span>+</span></summary>
             <p>No. The current scanner analyzes migration files and does not require database credentials. Active testing against disposable environments is a future, separately configured capability.</p>
           </details>
