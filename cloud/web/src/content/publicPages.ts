@@ -13,7 +13,7 @@ export type PublicPageKind =
 
 export interface CodeSample {
   label: string;
-  language: "bash" | "powershell" | "sql" | "yaml" | "json";
+  language: "bash" | "powershell" | "sql" | "yaml" | "json" | "text";
   value: string;
 }
 
@@ -396,7 +396,7 @@ const pages: PublicPage[] = [
     introduction:
       "The BoundaryCI composite Action installs the published CLI, scans the repository, and emits native GitHub annotations at the migration lines that introduced new findings.",
     publishedAt: CONTENT_DATE,
-    modifiedAt: CONTENT_DATE,
+    modifiedAt: BILLING_READINESS_DATE,
     sections: [
       {
         id: "workflow",
@@ -426,10 +426,22 @@ const pages: PublicPage[] = [
       },
       {
         id: "cloud",
-        heading: "Upload minimized history only when needed",
+        heading: "Store the token as a GitHub secret",
         paragraphs: [
-          "Cloud upload is optional and separate from scanning. When enabled, a repository-bound token sends commit context, counts, and redacted finding snippets after the local report is produced—not complete migration files.",
+          "BoundaryCI Cloud shows a repository-bound token once. In the GitHub repository, open Settings, then Secrets and variables, then Actions. Create a repository secret named BOUNDARYCI_CLOUD_TOKEN and paste the token as its value. The token never belongs in the workflow file.",
         ],
+      },
+      {
+        id: "cloud-workflow",
+        heading: "Reference the secret from the workflow",
+        paragraphs: [
+          "The repository dashboard keeps a copyable setup guide after onboarding. Its YAML enables minimized Cloud history and contains only a GitHub secret reference, so it is safe to commit. If the token is replaced later, update the GitHub secret value without changing the workflow.",
+        ],
+        code: {
+          label: "Cloud inputs inside the BoundaryCI Action step",
+          language: "yaml",
+          value: "          upload: \"true\"\n          cloud-url: YOUR_BOUNDARYCI_INGEST_URL\n          cloud-token: ${{ secrets.BOUNDARYCI_CLOUD_TOKEN }}",
+        },
       },
     ],
     related: [sharedRelated.quickstart, sharedRelated.rules, sharedRelated.security],
@@ -446,7 +458,7 @@ const pages: PublicPage[] = [
     introduction:
       "BoundaryCI is a local-first Node.js CLI. Start with a migration directory, review the deterministic findings, then decide which severity should block a pull request.",
     publishedAt: CONTENT_DATE,
-    modifiedAt: CONTENT_DATE,
+    modifiedAt: BILLING_READINESS_DATE,
     sections: [
       {
         id: "requirements",
@@ -496,6 +508,28 @@ const pages: PublicPage[] = [
         heading: "Understand exit codes",
         paragraphs: [
           "Exit code 0 means the scan completed without a new non-waived finding at the selected threshold. Exit code 1 means the threshold was met. Exit code 2 means configuration or execution failed.",
+        ],
+      },
+      {
+        id: "cloud-repository",
+        heading: "Connect a repository to BoundaryCI Cloud",
+        paragraphs: [
+          "Create the organization and repository in BoundaryCI Cloud. Copy the one-time repository token, then save it in GitHub under Settings, Secrets and variables, Actions as a repository secret named BOUNDARYCI_CLOUD_TOKEN.",
+          "The token is the private credential. The workflow YAML is not private: it contains only the secret name and BoundaryCI ingestion URL. Every repository dashboard keeps the exact file path and YAML available under Setup guide, even after the token screen is closed.",
+        ],
+        code: {
+          label: "GitHub Actions secret name",
+          language: "text",
+          value: "BOUNDARYCI_CLOUD_TOKEN",
+        },
+        note: "If the token is lost, create a new token from the repository card and replace the GitHub secret value. Do not paste a token into a committed file or support request.",
+      },
+      {
+        id: "first-cloud-run",
+        heading: "Verify the first pull request",
+        paragraphs: [
+          "Commit the generated workflow to the default branch, then open a pull request that contains an SQL migration. BoundaryCI scans inside GitHub, annotates unsafe lines, uploads the minimized result, and preserves corrected reruns in Cloud history.",
+          "A failed BoundaryCI check can be the expected result: it means a new finding met the configured failure threshold. Correct the migration on the same branch and push again; the Action reruns automatically.",
         ],
       },
     ],

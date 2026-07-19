@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { buildActionYaml, formatRelative, highestSeverity, isGitHubRepository, slugify } from "./format";
+import {
+  GITHUB_ACTION_SECRET_NAME,
+  GITHUB_WORKFLOW_PATH,
+  buildActionYaml,
+  formatRelative,
+  highestSeverity,
+  isGitHubRepository,
+  slugify,
+} from "./format";
 
 describe("Cloud presentation helpers", () => {
   it("creates safe organization slugs", () => {
@@ -17,7 +25,10 @@ describe("Cloud presentation helpers", () => {
     const yaml = buildActionYaml("https://example.supabase.co/functions/v1/ingest-scan");
     expect(yaml).toContain("BOUNDARYCI_CLOUD_TOKEN");
     expect(yaml).toContain("https://example.supabase.co/functions/v1/ingest-scan");
+    expect(yaml).toContain("permissions:\n  contents: read");
     expect(yaml).not.toContain("bci_");
+    expect(GITHUB_ACTION_SECRET_NAME).toBe("BOUNDARYCI_CLOUD_TOKEN");
+    expect(GITHUB_WORKFLOW_PATH).toBe(".github/workflows/boundaryci.yml");
   });
 
   it("formats relative run times and selects the worst severity", () => {

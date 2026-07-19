@@ -53,9 +53,15 @@ export function highestSeverity(summary: ScanSummary): Severity | null {
   return null;
 }
 
+export const GITHUB_ACTION_SECRET_NAME = "BOUNDARYCI_CLOUD_TOKEN";
+export const GITHUB_WORKFLOW_PATH = ".github/workflows/boundaryci.yml";
+
 export function buildActionYaml(ingestEndpoint: string): string {
   return `name: Tenant isolation
 on: [pull_request]
+
+permissions:
+  contents: read
 
 jobs:
   boundaryci:
