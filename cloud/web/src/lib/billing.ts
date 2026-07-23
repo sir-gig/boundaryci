@@ -3,6 +3,11 @@ import type { Plan } from "../types";
 export type CheckoutPlan = "team" | "growth";
 export type CheckoutInterval = "monthly" | "annual";
 
+export interface CheckoutIntent {
+  plan: CheckoutPlan;
+  interval: CheckoutInterval;
+}
+
 export interface BillingPlan {
   key: Plan;
   name: string;
@@ -67,6 +72,16 @@ export function planName(plan: Plan): string {
 
 export function checkoutPlan(plan: Plan): CheckoutPlan | null {
   return plan === "team" || plan === "growth" ? plan : null;
+}
+
+export function checkoutIntentFromSearch(search: string): CheckoutIntent | null {
+  const parameters = new URLSearchParams(search);
+  const plan = parameters.get("plan");
+  if (plan !== "team" && plan !== "growth") return null;
+  return {
+    plan,
+    interval: parameters.get("interval") === "annual" ? "annual" : "monthly",
+  };
 }
 
 export function isStripeHostedUrl(value: unknown): value is string {

@@ -1,7 +1,7 @@
 import type { Session } from "@supabase/supabase-js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { errorMessage } from "../lib/errors";
-import { planName } from "../lib/billing";
+import { planName, type CheckoutIntent } from "../lib/billing";
 import { formatRelative, highestSeverity, shortCommit } from "../lib/format";
 import { canManageOrganization } from "../lib/permissions";
 import { requireSupabase } from "../lib/supabase";
@@ -81,7 +81,13 @@ export function WorkspaceLoadError({
   );
 }
 
-export function Dashboard({ session }: { session: Session }) {
+export function Dashboard({
+  session,
+  checkoutIntent = null,
+}: {
+  session: Session;
+  checkoutIntent?: CheckoutIntent | null;
+}) {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [selectedOrganizationId, setSelectedOrganizationId] = useState<string | null>(null);
   const [repositories, setRepositories] = useState<Repository[]>([]);
@@ -100,7 +106,7 @@ export function Dashboard({ session }: { session: Session }) {
   const [organizationRole, setOrganizationRole] = useState<string | null>(null);
   const billingResult = new URLSearchParams(window.location.search).get("billing");
   const [dashboardView, setDashboardView] = useState<DashboardView>(
-    billingResult ? "billing" : "overview",
+    billingResult || checkoutIntent ? "billing" : "overview",
   );
 
   const loadOrganizations = useCallback(async (
@@ -361,6 +367,8 @@ export function Dashboard({ session }: { session: Session }) {
             monthlyUsage={monthlyUsage}
             canManage={canManage}
             result={billingResult}
+            selectedPlan={checkoutIntent?.plan ?? null}
+            initialInterval={checkoutIntent?.interval ?? "monthly"}
             onRefresh={() => {
               void loadOrganizations(selectedOrganization.id, { background: true });
               void loadWorkspace(selectedOrganization.id, { background: true });
