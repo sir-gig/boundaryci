@@ -84,6 +84,15 @@ export function checkoutIntentFromSearch(search: string): CheckoutIntent | null 
   };
 }
 
+export function searchWithoutCheckoutIntent(search: string): string {
+  const parameters = new URLSearchParams(search);
+  parameters.delete("auth");
+  parameters.delete("plan");
+  parameters.delete("interval");
+  const remaining = parameters.toString();
+  return remaining ? `?${remaining}` : "";
+}
+
 export function isStripeHostedUrl(value: unknown): value is string {
   if (typeof value !== "string") return false;
   try {

@@ -5,6 +5,7 @@ import {
   checkoutPlan,
   isStripeHostedUrl,
   planName,
+  searchWithoutCheckoutIntent,
 } from "./billing";
 
 describe("billing catalog", () => {
@@ -33,6 +34,16 @@ describe("billing catalog", () => {
     });
     expect(checkoutIntentFromSearch("?plan=trial")).toBeNull();
     expect(checkoutIntentFromSearch("?plan=enterprise")).toBeNull();
+  });
+
+  it("consumes checkout intent while preserving unrelated query state", () => {
+    expect(
+      searchWithoutCheckoutIntent(
+        "?auth=signup&plan=team&interval=annual&campaign=design-partner",
+      ),
+    ).toBe("?campaign=design-partner");
+    expect(searchWithoutCheckoutIntent("?plan=growth&interval=monthly")).toBe("");
+    expect(searchWithoutCheckoutIntent("?billing=success&plan=team")).toBe("?billing=success");
   });
 
   it("accepts only Stripe-hosted redirect URLs", () => {

@@ -1,7 +1,11 @@
 import type { Session } from "@supabase/supabase-js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { errorMessage } from "../lib/errors";
-import { planName, type CheckoutIntent } from "../lib/billing";
+import {
+  planName,
+  searchWithoutCheckoutIntent,
+  type CheckoutIntent,
+} from "../lib/billing";
 import { formatRelative, highestSeverity, shortCommit } from "../lib/format";
 import { canManageOrganization } from "../lib/permissions";
 import { requireSupabase } from "../lib/supabase";
@@ -104,9 +108,10 @@ export function Dashboard({
   const [addingRepository, setAddingRepository] = useState(false);
   const [creatingTokenFor, setCreatingTokenFor] = useState<string | null>(null);
   const [organizationRole, setOrganizationRole] = useState<string | null>(null);
+  const [initialCheckoutIntent] = useState<CheckoutIntent | null>(checkoutIntent);
   const billingResult = new URLSearchParams(window.location.search).get("billing");
   const [dashboardView, setDashboardView] = useState<DashboardView>(
-    billingResult || checkoutIntent ? "billing" : "overview",
+    billingResult || initialCheckoutIntent ? "billing" : "overview",
   );
 
   const loadOrganizations = useCallback(async (
@@ -204,6 +209,15 @@ export function Dashboard({
   useEffect(() => {
     void loadOrganizations();
   }, [loadOrganizations]);
+
+  useEffect(() => {
+    if (!initialCheckoutIntent) return;
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${searchWithoutCheckoutIntent(window.location.search)}${window.location.hash}`,
+    );
+  }, [initialCheckoutIntent]);
 
   useEffect(() => {
     if (selectedOrganizationId) void loadWorkspace(selectedOrganizationId);
@@ -367,8 +381,8 @@ export function Dashboard({
             monthlyUsage={monthlyUsage}
             canManage={canManage}
             result={billingResult}
-            selectedPlan={checkoutIntent?.plan ?? null}
-            initialInterval={checkoutIntent?.interval ?? "monthly"}
+            selectedPlan={initialCheckoutIntent?.plan ?? null}
+            initialInterval={initialCheckoutIntent?.interval ?? "monthly"}
             onRefresh={() => {
               void loadOrganizations(selectedOrganization.id, { background: true });
               void loadWorkspace(selectedOrganization.id, { background: true });
